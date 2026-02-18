@@ -1,0 +1,70 @@
+{
+  "query": "SELECT id, materialId, profileId, adaptedFileName FROM adapted_materials LIMIT 10;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway04.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 2MNwd6jx2kGbV2Z.root --database Xj7vRjDX4dtZ5YYPZtKPcB --execute SELECT id, materialId, profileId, adaptedFileName FROM adapted_materials LIMIT 10;",
+  "rows": [
+    {
+      "id": "1",
+      "materialId": "5",
+      "profileId": "1",
+      "adaptedFileName": "Plano de Aula- A Odisseia da Vida_adaptado_1.pdf"
+    },
+    {
+      "id": "2",
+      "materialId": "5",
+      "profileId": "2",
+      "adaptedFileName": "Plano de Aula- A Odisseia da Vida_adaptado_2.pdf"
+    },
+    {
+      "id": "3",
+      "materialId": "5",
+      "profileId": "3",
+      "adaptedFileName": "Plano de Aula- A Odisseia da Vida_adaptado_3.pdf"
+    },
+    {
+      "id": "4",
+      "materialId": "5",
+      "profileId": "60001",
+      "adaptedFileName": "Plano de Aula- A Odisseia da Vida_adaptado_60001.pdf"
+    },
+    {
+      "id": "5",
+      "materialId": "5",
+      "profileId": "1",
+      "adaptedFileName": "Plano de Aula- A Odisseia da Vida_adaptado_1.pdf"
+    },
+    {
+      "id": "6",
+      "materialId": "5",
+      "profileId": "2",
+      "adaptedFileName": "Plano de Aula- A Odisseia da Vida_adaptado_2.pdf"
+    },
+    {
+      "id": "7",
+      "materialId": "5",
+      "profileId": "3",
+      "adaptedFileName": "Plano de Aula- A Odisseia da Vida_adaptado_3.pdf"
+    },
+    {
+      "id": "8",
+      "materialId": "5",
+      "profileId": "60001",
+      "adaptedFileName": "Plano de Aula- A Odisseia da Vida_adaptado_60001.pdf"
+    },
+    {
+      "id": "9",
+      "materialId": "5",
+      "profileId": "1",
+      "adaptedFileName": "Plano de Aula- A Odisseia da Vida_adaptado_1.pdf"
+    },
+    {
+      "id": "30001",
+      "materialId": "30001",
+      "profileId": "90001",
+      "adaptedFileName": "Ecologia Enem 2020-2025_adaptado_90001.pdf"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\tmaterialId\tprofileId\tadaptedFileName\n1\t5\t1\tPlano de Aula- A Odisseia da Vida_adaptado_1.pdf\n2\t5\t2\tPlano de Aula- A Odisseia da Vida_adaptado_2.pdf\n3\t5\t3\tPlano de Aula- A Odisseia da Vida_adaptado_3.pdf\n4\t5\t60001\tPlano de Aula- A Odisseia da Vida_adaptado_60001.pdf\n5\t5\t1\tPlano de Aula- A Odisseia da Vida_adaptado_1.pdf\n6\t5\t2\tPlano de Aula- A Odisseia da Vida_adaptado_2.pdf\n7\t5\t3\tPlano de Aula- A Odisseia da Vida_adaptado_3.pdf\n8\t5\t60001\tPlano de Aula- A Odisseia da Vida_adaptado_60001.pdf\n9\t5\t1\tPlano de Aula- A Odisseia da Vida_adaptado_1.pdf\n30001\t30001\t90001\tEcologia Enem 2020-2025_adaptado_90001.pdf\n",
+  "stderr": "",
+  "execution_time_ms": 103
+}
