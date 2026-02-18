@@ -215,7 +215,7 @@ export default function ClassDetail() {
                         <div>
                           <Label htmlFor="fragmentacao">Fragmentação</Label>
                           <Select value={fragmentacao} onValueChange={(v: any) => setFragmentacao(v)}>
-                            <SelectTrigger id="fragmentacao">
+                            <SelectTrigger id="fragmentacao" className="w-full">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -229,7 +229,7 @@ export default function ClassDetail() {
                         <div>
                           <Label htmlFor="abstracao">Abstração</Label>
                           <Select value={abstracao} onValueChange={(v: any) => setAbstracao(v)}>
-                            <SelectTrigger id="abstracao">
+                            <SelectTrigger id="abstracao" className="w-full">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -244,7 +244,7 @@ export default function ClassDetail() {
                         <div>
                           <Label htmlFor="mediacao">Mediação</Label>
                           <Select value={mediacao} onValueChange={(v: any) => setMediacao(v)}>
-                            <SelectTrigger id="mediacao">
+                            <SelectTrigger id="mediacao" className="w-full">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -258,7 +258,7 @@ export default function ClassDetail() {
                         <div>
                           <Label htmlFor="dislexia">Dislexia</Label>
                           <Select value={dislexia} onValueChange={(v: any) => setDislexia(v)}>
-                            <SelectTrigger id="dislexia">
+                            <SelectTrigger id="dislexia" className="w-full">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -271,7 +271,7 @@ export default function ClassDetail() {
                         <div>
                           <Label htmlFor="tipoLetra">Tipo de Letra</Label>
                           <Select value={tipoLetra} onValueChange={(v: any) => setTipoLetra(v)}>
-                            <SelectTrigger id="tipoLetra">
+                            <SelectTrigger id="tipoLetra" className="w-full">
                               <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
