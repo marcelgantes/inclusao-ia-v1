@@ -7,26 +7,47 @@ let _db: ReturnType<typeof drizzle> | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
 // Mock DB implementation for development without a real MySQL server
+const memoryStore: Record<string, any[]> = {
+  users: [{ id: 1, openId: "mock-user-id", name: "Professor Gantes (Mock)", role: "admin" }],
+  classes: [],
+  student_profiles: [],
+  materials: [],
+  adapted_materials: [],
+};
+
 const mockDb = {
   select: () => ({
-    from: () => ({
-      where: () => ({
-        limit: () => Promise.resolve([]),
-      }),
-      limit: () => Promise.resolve([]),
-    }),
+    from: (table: any) => {
+      const tableName = table.config.name;
+      const data = memoryStore[tableName] || [];
+      const result = {
+        where: () => result,
+        limit: () => result,
+        execute: () => Promise.resolve(data),
+        then: (resolve: any) => resolve(data),
+      };
+      return result;
+    },
   }),
-  insert: () => ({
-    values: () => ({
-      onDuplicateKeyUpdate: () => Promise.resolve([{ insertId: 1 }]),
-    }),
+  insert: (table: any) => ({
+    values: (values: any) => {
+      const tableName = table.config.name;
+      const newId = (memoryStore[tableName]?.length || 0) + 1;
+      const record = { id: newId, ...values, createdAt: new Date(), updatedAt: new Date() };
+      if (memoryStore[tableName]) memoryStore[tableName].push(record);
+      const result = {
+        onDuplicateKeyUpdate: () => Promise.resolve([{ insertId: newId }]),
+        then: (resolve: any) => resolve([{ insertId: newId }]),
+      };
+      return result;
+    },
   }),
-  update: () => ({
-    set: () => ({
+  update: (table: any) => ({
+    set: (values: any) => ({
       where: () => Promise.resolve(),
     }),
   }),
-  delete: () => ({
+  delete: (table: any) => ({
     where: () => Promise.resolve(),
   }),
 };
