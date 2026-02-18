@@ -4,10 +4,14 @@ export { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 export const getLoginUrl = () => {
   const oauthPortalUrl = import.meta.env.VITE_OAUTH_PORTAL_URL || "https://auth.manus.im";
   const appId = import.meta.env.VITE_APP_ID || "teste_local";
-  const redirectUri = `${window.location.origin}/api/oauth/callback`;
+  const redirectUri = typeof window !== "undefined" ? `${window.location.origin}/api/oauth/callback` : "";
   const state = btoa(redirectUri);
 
+  // If oauthPortalUrl is not a valid URL, return a safe fallback instead of throwing
   try {
+    if (!oauthPortalUrl || oauthPortalUrl === "") {
+      return "#";
+    }
     const url = new URL(`${oauthPortalUrl}/app-auth`);
     url.searchParams.set("appId", appId);
     url.searchParams.set("redirectUri", redirectUri);
@@ -15,7 +19,7 @@ export const getLoginUrl = () => {
     url.searchParams.set("type", "signIn");
     return url.toString();
   } catch (e) {
-    console.error("Erro ao gerar URL de login:", e);
+    console.warn("Erro ao gerar URL de login, usando fallback:", e);
     return "#";
   }
 };
