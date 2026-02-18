@@ -213,14 +213,6 @@ export const appRouter = router({
             const mimeType = material.fileType === "pdf" ? "application/pdf" : "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             const { url: adaptedUrl } = await storagePut(adaptedFileKey, adaptedBuffer, mimeType);
 
-            await createAdaptedMaterial(
-              material.id,
-              profileId,
-              adaptedFileName,
-              adaptedUrl,
-              adaptedFileKey,
-              adaptedBuffer.length
-            );
 
             const adaptedMaterial = await createAdaptedMaterial(
               material.id,
