@@ -13,7 +13,7 @@ export async function createContext(
 ): Promise<TrpcContext> {
   let user: User | null = null;
 
-  if (process.env.NODE_ENV === "development") {
+  if (process.env.NODE_ENV === "development" || !process.env.DATABASE_URL) {
     // Mock user for development bypass
     user = {
       id: 1,

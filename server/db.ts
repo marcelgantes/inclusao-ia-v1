@@ -3,6 +3,15 @@ import { drizzle } from "drizzle-orm/mysql2";
 import { InsertUser, users, classes, studentProfiles, materials, adaptedMaterials } from "../drizzle/schema";
 import { ENV } from './_core/env';
 
+// Mapeamento manual para o mockDb
+const tableMap = new Map<any, string>([
+  [users, "users"],
+  [classes, "classes"],
+  [studentProfiles, "student_profiles"],
+  [materials, "materials"],
+  [adaptedMaterials, "adapted_materials"],
+]);
+
 let _db: ReturnType<typeof drizzle> | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
@@ -15,13 +24,43 @@ const memoryStore: Record<string, any[]> = {
   adapted_materials: [],
 };
 
+const getTableName = (table: any) => {
+  // Tentar o mapeamento manual primeiro
+  if (tableMap.has(table)) return tableMap.get(table)!;
+
+  // Fallback para detecção automática
+  const name = (table as any)?.config?.name || 
+               (table as any)?._?.name || 
+               (table as any)?.name ||
+               "unknown";
+  
+  if (name === "student_profiles") return "student_profiles";
+  if (name === "adapted_materials") return "adapted_materials";
+  return name;
+};
+
 const mockDb = {
   select: () => ({
     from: (table: any) => {
-      const tableName = table.config.name;
+      const tableName = getTableName(table);
       const data = memoryStore[tableName] || [];
       const result = {
-        where: () => result,
+        where: (condition: any) => {
+          // Implementação simplificada de filtro para o mock (ex: eq(classes.userId, userId))
+          if (condition && condition.left && condition.right) {
+            const field = condition.left.name;
+            const value = condition.right;
+            const filteredData = data.filter((item: any) => item[field] === value);
+            
+            const filteredResult = {
+              limit: () => filteredResult,
+              execute: () => Promise.resolve(filteredData),
+              then: (resolve: any) => resolve(filteredData),
+            };
+            return filteredResult;
+          }
+          return result;
+        },
         limit: () => result,
         execute: () => Promise.resolve(data),
         then: (resolve: any) => resolve(data),
@@ -31,7 +70,7 @@ const mockDb = {
   }),
   insert: (table: any) => ({
     values: (values: any) => {
-      const tableName = table.config.name;
+      const tableName = getTableName(table);
       const newId = (memoryStore[tableName]?.length || 0) + 1;
       const record = { id: newId, ...values, createdAt: new Date(), updatedAt: new Date() };
       if (memoryStore[tableName]) memoryStore[tableName].push(record);
@@ -42,6 +81,9 @@ const mockDb = {
       const result = {
         onDuplicateKeyUpdate: () => Promise.resolve(insertResult),
         then: (resolve: any) => resolve(insertResult),
+        // Adicionando suporte para acesso direto ao array se necessário
+        0: insertResult[0],
+        length: 1
       };
       return result;
     },
@@ -146,7 +188,9 @@ export async function createClass(userId: number, name: string, description?: st
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   const result = await db.insert(classes).values({ userId, name, description });
-  return { insertId: result[0].insertId };
+  // Verificação de segurança para o resultado do insert
+  const insertId = (result as any)[0]?.insertId || (result as any).insertId;
+  return { insertId };
 }
 
 export async function getClassesByUserId(userId: number) {
@@ -197,7 +241,8 @@ export async function createStudentProfile(
     tipoLetra,
     observacoes,
   });
-  return { insertId: result[0].insertId };
+  const insertId = (result as any)[0]?.insertId || (result as any).insertId;
+  return { insertId };
 }
 
 export async function getProfilesByClassId(classId: number) {
@@ -248,7 +293,8 @@ export async function createMaterial(
   const db = await getDb();
   if (!db) throw new Error("Database not available");
   const result = await db.insert(materials).values({ classId, fileName, fileType, fileUrl, fileKey, fileSize });
-  return { insertId: result[0].insertId };
+  const insertId = (result as any)[0]?.insertId || (result as any).insertId;
+  return { insertId };
 }
 
 export async function getMaterialsByClassId(classId: number) {

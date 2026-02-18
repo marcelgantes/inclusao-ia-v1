@@ -67,10 +67,18 @@ export default function Dashboard() {
     navigate(`/class/${classId}`);
   };
 
-  if (!user) {
+  if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <p>Carregando...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <p>Usuário não autenticado. Redirecionando...</p>
       </div>
     );
   }
@@ -87,7 +95,7 @@ export default function Dashboard() {
         {/* Welcome Section */}
         <Card className="mb-8 bg-white border-0 shadow-lg">
           <CardHeader>
-            <CardTitle>Bem-vindo, {user.name}!</CardTitle>
+            <CardTitle>Bem-vindo, {user?.name || "Professor"}!</CardTitle>
             <CardDescription>
               Gerencie suas turmas e crie perfis de alunos para adaptar materiais didáticos automaticamente.
             </CardDescription>
