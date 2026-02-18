@@ -201,8 +201,8 @@ export default function ClassDetail() {
                           Configure os 5 parâmetros essenciais para adaptar materiais
                         </DialogDescription>
                       </DialogHeader>
-                      <div className="space-y-4">
-                        <div>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
                           <Label htmlFor="profile-name">Nome do Perfil (anônimo)</Label>
                           <Input
                             id="profile-name"
@@ -212,13 +212,13 @@ export default function ClassDetail() {
                           />
                         </div>
 
-                        <div>
-                          <Label htmlFor="fragmentacao">Fragmentação</Label>
+                        <div className="space-y-2">
+                          <Label>Fragmentação</Label>
                           <Select value={fragmentacao} onValueChange={(v: any) => setFragmentacao(v)}>
-                            <SelectTrigger id="fragmentacao" className="w-full">
+                            <SelectTrigger className="w-full">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent position="popper">
                               <SelectItem value="baixa">Baixa - Texto contínuo e fluido</SelectItem>
                               <SelectItem value="media">Média - Parágrafos curtos e organizados</SelectItem>
                               <SelectItem value="alta">Alta - Blocos muito curtos com tópicos</SelectItem>
@@ -226,13 +226,13 @@ export default function ClassDetail() {
                           </Select>
                         </div>
 
-                        <div>
-                          <Label htmlFor="abstracao">Abstração</Label>
+                        <div className="space-y-2">
+                          <Label>Abstração</Label>
                           <Select value={abstracao} onValueChange={(v: any) => setAbstracao(v)}>
-                            <SelectTrigger id="abstracao" className="w-full">
+                            <SelectTrigger className="w-full">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent position="popper">
                               <SelectItem value="alta">Alta - Com analogias e exemplos avançados</SelectItem>
                               <SelectItem value="media">Média - Exemplos simples e diretos</SelectItem>
                               <SelectItem value="baixa">Baixa - Passo a passo e literal</SelectItem>
@@ -241,13 +241,13 @@ export default function ClassDetail() {
                           </Select>
                         </div>
 
-                        <div>
-                          <Label htmlFor="mediacao">Mediação</Label>
+                        <div className="space-y-2">
+                          <Label>Mediação</Label>
                           <Select value={mediacao} onValueChange={(v: any) => setMediacao(v)}>
-                            <SelectTrigger id="mediacao" className="w-full">
+                            <SelectTrigger className="w-full">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent position="popper">
                               <SelectItem value="autonomo">Autônomo - Segue sozinho</SelectItem>
                               <SelectItem value="guiado">Guiado - Com instruções curtas</SelectItem>
                               <SelectItem value="passo_a_passo">Passo a Passo - Detalhado com checagens</SelectItem>
@@ -255,33 +255,33 @@ export default function ClassDetail() {
                           </Select>
                         </div>
 
-                        <div>
-                          <Label htmlFor="dislexia">Dislexia</Label>
+                        <div className="space-y-2">
+                          <Label>Dislexia</Label>
                           <Select value={dislexia} onValueChange={(v: any) => setDislexia(v)}>
-                            <SelectTrigger id="dislexia" className="w-full">
+                            <SelectTrigger className="w-full">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent position="popper">
                               <SelectItem value="sim">Sim - Adaptar para dislexia</SelectItem>
                               <SelectItem value="nao">Não - Formatação padrão</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
 
-                        <div>
-                          <Label htmlFor="tipoLetra">Tipo de Letra</Label>
+                        <div className="space-y-2">
+                          <Label>Tipo de Letra</Label>
                           <Select value={tipoLetra} onValueChange={(v: any) => setTipoLetra(v)}>
-                            <SelectTrigger id="tipoLetra" className="w-full">
+                            <SelectTrigger className="w-full">
                               <SelectValue />
                             </SelectTrigger>
-                            <SelectContent>
+                            <SelectContent position="popper">
                               <SelectItem value="bastao">Bastão (sem serifas)</SelectItem>
                               <SelectItem value="normal">Normal (padrão)</SelectItem>
                             </SelectContent>
                           </Select>
                         </div>
 
-                        <div>
+                        <div className="space-y-2">
                           <Label htmlFor="observacoes">Observações (opcional)</Label>
                           <Textarea
                             id="observacoes"
@@ -294,7 +294,7 @@ export default function ClassDetail() {
                         <Button
                           onClick={handleCreateProfile}
                           disabled={createProfileMutation.isPending}
-                          className="w-full bg-indigo-600 hover:bg-indigo-700"
+                          className="w-full bg-indigo-600 hover:bg-indigo-700 mt-4"
                         >
                           {createProfileMutation.isPending ? "Criando..." : "Criar Perfil"}
                         </Button>
