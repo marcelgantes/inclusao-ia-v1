@@ -78,7 +78,8 @@ export const appRouter = router({
           input.tipoLetra,
           input.observacoes
         );
-        return { success: true, profileId: result.insertId };
+        const profileId = (result as any).insertId || (result as any)[0]?.insertId;
+        return { success: true, profileId };
       }),
     listByClass: protectedProcedure
       .input(z.object({ classId: z.number() }))
