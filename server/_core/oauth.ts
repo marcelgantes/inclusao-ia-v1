@@ -20,10 +20,15 @@ export function registerOAuthRoutes(app: Express) {
     }
 
     try {
+      console.log("[OAuth] Callback received with code and state");
       const tokenResponse = await sdk.exchangeCodeForToken(code, state);
+      console.log("[OAuth] Token exchanged successfully");
+      
       const userInfo = await sdk.getUserInfo(tokenResponse.accessToken);
+      console.log("[OAuth] User info retrieved for openId:", userInfo.openId);
 
       if (!userInfo.openId) {
+        console.error("[OAuth] openId missing from user info response");
         res.status(400).json({ error: "openId missing from user info" });
         return;
       }
@@ -35,6 +40,7 @@ export function registerOAuthRoutes(app: Express) {
         loginMethod: userInfo.loginMethod ?? userInfo.platform ?? null,
         lastSignedIn: new Date(),
       });
+      console.log("[OAuth] User upserted in database");
 
       const sessionToken = await sdk.createSessionToken(userInfo.openId, {
         name: userInfo.name || "",
@@ -42,12 +48,27 @@ export function registerOAuthRoutes(app: Express) {
       });
 
       const cookieOptions = getSessionCookieOptions(req);
-      res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+      const isSecure = cookieOptions.secure;
+      
+      console.log("[OAuth] Setting session cookie. Secure:", isSecure);
+      res.cookie(COOKIE_NAME, sessionToken, {
+        ...cookieOptions,
+        sameSite: isSecure ? "none" : "lax",
+        maxAge: ONE_YEAR_MS,
+      });
 
       res.redirect(302, "/");
-    } catch (error) {
-      console.error("[OAuth] Callback failed", error);
-      res.status(500).json({ error: "OAuth callback failed" });
+    } catch (error: any) {
+      console.error("[OAuth] Callback failed:", error.message);
+      if (error.response) {
+        console.error("[OAuth] Error response data:", error.response.data);
+        console.error("[OAuth] Error response status:", error.response.status);
+      }
+      res.status(500).json({ 
+        error: "OAuth callback failed", 
+        message: error.message,
+        details: process.env.NODE_ENV === 'development' ? error.response?.data : undefined
+      });
     }
   });
 }
