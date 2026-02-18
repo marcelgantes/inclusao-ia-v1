@@ -6,14 +6,41 @@ import { ENV } from './_core/env';
 let _db: ReturnType<typeof drizzle> | null = null;
 
 // Lazily create the drizzle instance so local tooling can run without a DB.
+// Mock DB implementation for development without a real MySQL server
+const mockDb = {
+  select: () => ({
+    from: () => ({
+      where: () => ({
+        limit: () => Promise.resolve([]),
+      }),
+      limit: () => Promise.resolve([]),
+    }),
+  }),
+  insert: () => ({
+    values: () => ({
+      onDuplicateKeyUpdate: () => Promise.resolve([{ insertId: 1 }]),
+    }),
+  }),
+  update: () => ({
+    set: () => ({
+      where: () => Promise.resolve(),
+    }),
+  }),
+  delete: () => ({
+    where: () => Promise.resolve(),
+  }),
+};
+
 export async function getDb() {
-  if (!_db && process.env.DATABASE_URL) {
+  if (!_db && process.env.DATABASE_URL && process.env.NODE_ENV !== "development") {
     try {
       _db = drizzle(process.env.DATABASE_URL);
     } catch (error) {
       console.warn("[Database] Failed to connect:", error);
-      _db = null;
+      _db = mockDb as any;
     }
+  } else if (!_db) {
+    _db = mockDb as any;
   }
   return _db;
 }

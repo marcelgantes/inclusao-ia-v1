@@ -24,6 +24,7 @@ import {
 import { adaptTextContent, validateProfile } from "./adaptation";
 import { extractTextFromPDF, extractTextFromDOCX, generatePDFFromText, generateDOCXFromText } from "./document-processor";
 import { storagePut, storageGet } from "./storage";
+import axios from "axios";
 
 export const appRouter = router({
   system: systemRouter,
@@ -160,8 +161,8 @@ export const appRouter = router({
         let extractedText = "";
         try {
           const { url } = await storageGet(material.fileKey);
-          const response = await fetch(url);
-          const buffer = await response.arrayBuffer();
+          const response = await axios.get(url, { responseType: 'arraybuffer' });
+          const buffer = response.data;
 
           if (material.fileType === "pdf") {
             extractedText = await extractTextFromPDF(Buffer.from(buffer));

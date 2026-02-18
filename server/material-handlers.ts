@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import multer from "multer";
 import path from "path";
+import axios from "axios";
 import { storagePut, storageGet } from "./storage";
 import { createMaterial, getMaterialById, getProfileById } from "./db";
 import { adaptTextContent, validateProfile } from "./adaptation";
@@ -27,6 +28,21 @@ interface AuthenticatedRequest extends Request {
 
 // Middleware para autenticar usuário
 function authMiddleware(req: any, res: Response, next: any) {
+  if (process.env.NODE_ENV === "development") {
+    req.user = {
+      id: 1,
+      openId: "mock-user-id",
+      name: "Professor Gantes (Mock)",
+      email: "gantes@exemplo.com",
+      loginMethod: "mock",
+      role: "admin",
+      createdAt: new Date(),
+      updatedAt: new Date(),
+      lastSignedIn: new Date(),
+    };
+    return next();
+  }
+
   sdk.authenticateRequest(req)
     .then((user) => {
       if (!user) {
@@ -81,7 +97,7 @@ export function setupMaterialHandlers(app: express.Application) {
   });
 
   // Process and adapt material
-  app.post("/api/materials/process", async (req: AuthenticatedRequest, res: Response) => {
+  app.post("/api/materials/process", authMiddleware, async (req: AuthenticatedRequest, res: Response) => {
     try {
       const { materialId, profileIds } = req.body;
       const userId = req.user?.id;
@@ -100,8 +116,8 @@ export function setupMaterialHandlers(app: express.Application) {
       const { url: materialUrl } = await storageGet(material.fileKey);
 
       // Download material from S3
-      const response = await fetch(materialUrl);
-      const buffer = await response.arrayBuffer();
+      const response = await axios.get(materialUrl, { responseType: 'arraybuffer' });
+      const buffer = response.data;
 
       // Save buffer to temp file for extraction
       const tempPath = require("path").join(require("os").tmpdir(), `${Date.now()}.${material.fileType}`);
