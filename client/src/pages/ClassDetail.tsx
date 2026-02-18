@@ -214,71 +214,66 @@ export default function ClassDetail() {
 
                         <div className="space-y-2">
                           <Label>Fragmentação</Label>
-                          <Select value={fragmentacao} onValueChange={(v: any) => setFragmentacao(v)}>
-                            <SelectTrigger className="w-full">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent position="popper">
-                              <SelectItem value="baixa">Baixa - Texto contínuo e fluido</SelectItem>
-                              <SelectItem value="media">Média - Parágrafos curtos e organizados</SelectItem>
-                              <SelectItem value="alta">Alta - Blocos muito curtos com tópicos</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <select 
+                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            value={fragmentacao} 
+                            onChange={(e) => setFragmentacao(e.target.value as any)}
+                          >
+                            <option value="baixa">Baixa - Texto contínuo e fluido</option>
+                            <option value="media">Média - Parágrafos curtos e organizados</option>
+                            <option value="alta">Alta - Blocos muito curtos com tópicos</option>
+                          </select>
                         </div>
 
                         <div className="space-y-2">
                           <Label>Abstração</Label>
-                          <Select value={abstracao} onValueChange={(v: any) => setAbstracao(v)}>
-                            <SelectTrigger className="w-full">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent position="popper">
-                              <SelectItem value="alta">Alta - Com analogias e exemplos avançados</SelectItem>
-                              <SelectItem value="media">Média - Exemplos simples e diretos</SelectItem>
-                              <SelectItem value="baixa">Baixa - Passo a passo e literal</SelectItem>
-                              <SelectItem value="nao_abstrai">Não abstrai - Apenas fatos e definições</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <select 
+                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            value={abstracao} 
+                            onChange={(e) => setAbstracao(e.target.value as any)}
+                          >
+                            <option value="alta">Alta - Com analogias e exemplos avançados</option>
+                            <option value="media">Média - Exemplos simples e diretos</option>
+                            <option value="baixa">Baixa - Passo a passo e literal</option>
+                            <option value="nao_abstrai">Não abstrai - Apenas fatos e definições</option>
+                          </select>
                         </div>
 
                         <div className="space-y-2">
                           <Label>Mediação</Label>
-                          <Select value={mediacao} onValueChange={(v: any) => setMediacao(v)}>
-                            <SelectTrigger className="w-full">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent position="popper">
-                              <SelectItem value="autonomo">Autônomo - Segue sozinho</SelectItem>
-                              <SelectItem value="guiado">Guiado - Com instruções curtas</SelectItem>
-                              <SelectItem value="passo_a_passo">Passo a Passo - Detalhado com checagens</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <select 
+                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            value={mediacao} 
+                            onChange={(e) => setMediacao(e.target.value as any)}
+                          >
+                            <option value="autonomo">Autônomo - Segue sozinho</option>
+                            <option value="guiado">Guiado - Com instruções curtas</option>
+                            <option value="passo_a_passo">Passo a Passo - Detalhado com checagens</option>
+                          </select>
                         </div>
 
                         <div className="space-y-2">
                           <Label>Dislexia</Label>
-                          <Select value={dislexia} onValueChange={(v: any) => setDislexia(v)}>
-                            <SelectTrigger className="w-full">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent position="popper">
-                              <SelectItem value="sim">Sim - Adaptar para dislexia</SelectItem>
-                              <SelectItem value="nao">Não - Formatação padrão</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <select 
+                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            value={dislexia} 
+                            onChange={(e) => setDislexia(e.target.value as any)}
+                          >
+                            <option value="sim">Sim - Adaptar para dislexia</option>
+                            <option value="nao">Não - Formatação padrão</option>
+                          </select>
                         </div>
 
                         <div className="space-y-2">
                           <Label>Tipo de Letra</Label>
-                          <Select value={tipoLetra} onValueChange={(v: any) => setTipoLetra(v)}>
-                            <SelectTrigger className="w-full">
-                              <SelectValue />
-                            </SelectTrigger>
-                            <SelectContent position="popper">
-                              <SelectItem value="bastao">Bastão (sem serifas)</SelectItem>
-                              <SelectItem value="normal">Normal (padrão)</SelectItem>
-                            </SelectContent>
-                          </Select>
+                          <select 
+                            className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+                            value={tipoLetra} 
+                            onChange={(e) => setTipoLetra(e.target.value as any)}
+                          >
+                            <option value="bastao">Bastão (sem serifas)</option>
+                            <option value="normal">Normal (padrão)</option>
+                          </select>
                         </div>
 
                         <div className="space-y-2">
