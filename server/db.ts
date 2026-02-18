@@ -35,9 +35,13 @@ const mockDb = {
       const newId = (memoryStore[tableName]?.length || 0) + 1;
       const record = { id: newId, ...values, createdAt: new Date(), updatedAt: new Date() };
       if (memoryStore[tableName]) memoryStore[tableName].push(record);
+      
+      // O Drizzle espera que o resultado do insert seja um array com o objeto de resultado
+      const insertResult = [{ insertId: newId }];
+      
       const result = {
-        onDuplicateKeyUpdate: () => Promise.resolve([{ insertId: newId }]),
-        then: (resolve: any) => resolve([{ insertId: newId }]),
+        onDuplicateKeyUpdate: () => Promise.resolve(insertResult),
+        then: (resolve: any) => resolve(insertResult),
       };
       return result;
     },
