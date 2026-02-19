@@ -212,12 +212,11 @@ const normalizeToolChoice = (
 const resolveApiUrl = () =>
   ENV.forgeApiUrl && ENV.forgeApiUrl.trim().length > 0
     ? `${ENV.forgeApiUrl.replace(/\/$/, "")}/v1/chat/completions`
-    : "https://forge.manus.im/v1/chat/completions";
+    : "https://api.openai.com/v1/chat/completions";
 
 const assertApiKey = () => {
-  if (!ENV.forgeApiKey) {
-    throw new Error("OPENAI_API_KEY is not configured");
-  }
+  // Em ambiente de desenvolvimento ou Codespaces, a chave pode vir de várias fontes.
+  // Vamos permitir a tentativa de chamada e deixar o erro da API ser mais descritivo.
 };
 
 const normalizeResponseFormat = ({
@@ -280,7 +279,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
   } = params;
 
   const payload: Record<string, unknown> = {
-    model: "gemini-2.5-flash",
+    model: "gpt-4.1-mini",
     messages: messages.map(normalizeMessage),
   };
 
@@ -316,7 +315,7 @@ export async function invokeLLM(params: InvokeParams): Promise<InvokeResult> {
     method: "POST",
     headers: {
       "content-type": "application/json",
-      authorization: `Bearer ${ENV.forgeApiKey}`,
+      authorization: `Bearer ${ENV.forgeApiKey || process.env.OPENAI_API_KEY}`,
     },
     body: JSON.stringify(payload),
   });

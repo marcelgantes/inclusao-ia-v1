@@ -25,7 +25,8 @@ export async function extractTextFromPDF(input: Buffer | string): Promise<string
       .trim();
     
     if (text.length < 50) {
-      return "O conteúdo do PDF parece ser uma imagem ou está protegido. Por favor, tente um arquivo com texto selecionável.";
+      // Se a extração falhar, vamos retornar o texto original se possível ou uma mensagem clara
+      return originalText || "O conteúdo do PDF parece ser uma imagem ou está protegido. Por favor, tente um arquivo com texto selecionável.";
     }
     
     return text.substring(0, 10000);
