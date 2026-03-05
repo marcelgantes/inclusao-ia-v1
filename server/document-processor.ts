@@ -1,35 +1,51 @@
 import { Document, Packer, Paragraph, TextRun } from "docx";
-import { readFileSync, writeFileSync, unlinkSync } from "fs";
+import { writeFileSync, unlinkSync } from "fs";
 import { join } from "path";
 import { tmpdir } from "os";
 import { randomUUID } from "crypto";
 import pdfkit from "pdfkit";
 import * as fs from "fs";
+import { getDocument } from "pdfjs-dist/legacy/build/pdf.mjs";
 
 /**
- * Extracts text from a PDF file using a simple approach
- * For production, consider using a more robust library like pdfjs-dist
+ * Extracts text from a PDF file using pdfjs-dist.
  */
 export async function extractTextFromPDF(input: Buffer | string): Promise<string> {
   const buffer = typeof input === "string" ? fs.readFileSync(input) : input;
+
   try {
-    // Using a more robust approach for text extraction from PDF
-    // In a real environment with pdf-parse installed:
-    // const data = await pdf(buffer);
-    // return data.text;
-    
-    // For now, let's improve the heuristic to at least get some readable text
-    const text = buffer.toString("utf-8")
-      .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]/g, "") // Remove non-printable chars
-      .replace(/\s+/g, " ") // Normalize whitespace
-      .trim();
-    
-    if (text.length < 50) {
-      // Se a extração falhar, vamos retornar o texto original se possível ou uma mensagem clara
-      return originalText || "O conteúdo do PDF parece ser uma imagem ou está protegido. Por favor, tente um arquivo com texto selecionável.";
+    const loadingTask = getDocument({
+      data: new Uint8Array(buffer),
+      useWorkerFetch: false,
+      isEvalSupported: false,
+      useSystemFonts: true,
+      disableFontFace: true,
+    });
+
+    const pdf = await loadingTask.promise;
+    const pagesText: string[] = [];
+
+    for (let pageNumber = 1; pageNumber <= pdf.numPages; pageNumber++) {
+      const page = await pdf.getPage(pageNumber);
+      const content = await page.getTextContent();
+      const pageText = content.items
+        .map((item) => ("str" in item ? item.str : ""))
+        .join(" ")
+        .replace(/\s+/g, " ")
+        .trim();
+
+      if (pageText.length > 0) {
+        pagesText.push(pageText);
+      }
     }
-    
-    return text.substring(0, 10000);
+
+    const extractedText = pagesText.join("\n\n").trim();
+
+    if (!extractedText) {
+      return "Não foi possível extrair texto do PDF. O arquivo pode conter apenas imagens ou estar protegido.";
+    }
+
+    return extractedText.slice(0, 10000);
   } catch (error) {
     console.error("Error extracting text from PDF:", error);
     return "Erro na extração de texto do PDF.";
@@ -93,7 +109,7 @@ export async function generatePDFFromText(
 
       // Add content with appropriate spacing
       const paragraphs = text.split("\n\n");
-      
+
       for (const paragraph of paragraphs) {
         doc.font(font, fontSize).text(paragraph, {
           align: "left",
