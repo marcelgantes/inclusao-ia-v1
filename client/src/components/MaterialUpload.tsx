@@ -1,9 +1,8 @@
 import { useState, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Upload, X, FileText, Loader2 } from "lucide-react";
+import { Upload, X, FileText, Loader2, MousePointerClick, CheckCircle2 } from "lucide-react";
 import { toast } from "sonner";
-import { trpc } from "@/lib/trpc";
 
 interface MaterialUploadProps {
   classId: number;
@@ -15,8 +14,6 @@ export function MaterialUpload({ classId, onUploadSuccess }: MaterialUploadProps
   const [isUploading, setIsUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const uploadMutation = trpc.materials.upload.useMutation();
 
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
@@ -63,6 +60,10 @@ export function MaterialUpload({ classId, onUploadSuccess }: MaterialUploadProps
   };
 
   const handleUpload = async () => {
+    if (isUploading) {
+      return;
+    }
+
     if (!selectedFile) {
       toast.error("Selecione um arquivo");
       return;
@@ -89,16 +90,8 @@ export function MaterialUpload({ classId, onUploadSuccess }: MaterialUploadProps
 
       const uploadData = await uploadResponse.json();
 
-      // Save material metadata via tRPC
-      await uploadMutation.mutateAsync({
-        classId,
-        fileName: uploadData.fileName || selectedFile.name,
-        fileType: uploadData.fileType || (selectedFile.type === "application/pdf" ? "pdf" : "docx"),
-        fileUrl: uploadData.url,
-        fileKey: uploadData.fileKey,
-        fileSize: uploadData.fileSize || selectedFile.size,
-      });
-
+      // O endpoint /api/materials/upload já salva metadados no banco,
+      // então não devemos criar novamente via tRPC para evitar duplicidade.
       toast.success("Material enviado com sucesso!");
       setSelectedFile(null);
       if (fileInputRef.current) {
@@ -122,6 +115,15 @@ export function MaterialUpload({ classId, onUploadSuccess }: MaterialUploadProps
 
   return (
     <div className="space-y-4">
+      <div className="rounded-lg border border-indigo-100 bg-indigo-50/60 p-4">
+        <p className="font-semibold text-indigo-900">Como enviar (rápido):</p>
+        <ol className="mt-2 space-y-1 text-sm text-indigo-800">
+          <li className="flex items-center gap-2"><span className="font-bold">1.</span> Clique em <strong>Selecionar Arquivo</strong>.</li>
+          <li className="flex items-center gap-2"><span className="font-bold">2.</span> Escolha um arquivo PDF ou DOCX.</li>
+          <li className="flex items-center gap-2"><span className="font-bold">3.</span> Clique em <strong>Enviar Material</strong>.</li>
+        </ol>
+      </div>
+
       {!selectedFile ? (
         <div
           onDragOver={handleDragOver}
@@ -152,9 +154,9 @@ export function MaterialUpload({ classId, onUploadSuccess }: MaterialUploadProps
           />
           <Button
             onClick={() => fileInputRef.current?.click()}
-            variant="outline"
-            className="bg-white"
+            className="bg-indigo-600 hover:bg-indigo-700"
           >
+            <MousePointerClick className="w-4 h-4 mr-2" />
             Selecionar Arquivo
           </Button>
         </div>
@@ -181,23 +183,23 @@ export function MaterialUpload({ classId, onUploadSuccess }: MaterialUploadProps
             </div>
 
             <div className="flex gap-2 mt-6">
-              <Button
-                onClick={handleUpload}
-                disabled={isUploading}
-                className="flex-1 bg-indigo-600 hover:bg-indigo-700"
-              >
-                {isUploading ? (
-                  <>
-                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                    Enviando...
-                  </>
-                ) : (
-                  <>
-                    <Upload className="w-4 h-4 mr-2" />
-                    Enviar Material
-                  </>
-                )}
-              </Button>
+                <Button
+                  onClick={handleUpload}
+                  disabled={isUploading}
+                  className="flex-1 bg-indigo-600 hover:bg-indigo-700"
+                >
+                  {isUploading ? (
+                    <>
+                      <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                      Enviando...
+                    </>
+                  ) : (
+                    <>
+                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      Enviar Material
+                    </>
+                  )}
+                </Button>
               <Button
                 onClick={handleClear}
                 disabled={isUploading}
